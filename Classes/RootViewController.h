@@ -21,4 +21,8 @@
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
+
+// private I think.
+- (void)createAndPushViewControllerForManagedList:(NSManagedObject *)managedList;
+
 @end

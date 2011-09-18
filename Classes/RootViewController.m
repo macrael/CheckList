@@ -7,6 +7,7 @@
 //
 
 #import "RootViewController.h"
+#import "NNCheckListViewController.h"
 
 
 @interface RootViewController ()
@@ -27,6 +28,7 @@
 
     // Set up the edit and add buttons.
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
+	[self setTitle:@"Lists"];
     
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
     self.navigationItem.rightBarButtonItem = addButton;
@@ -76,11 +78,11 @@
 #pragma mark Add a new object
 
 - (void)insertNewObject {
+	NSLog(@"CREAST NEW OBJECT");
     
     // Create a new instance of the entity managed by the fetched results controller.
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    NSManagedObject *newList = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+    NSManagedObject *newList = [NSEntityDescription insertNewObjectForEntityForName:@"NNCheckList" inManagedObjectContext:context];
     
     // If appropriate, configure the new managed object.
 	[newList setValue:@"Dumb" forKey:@"title"];
@@ -98,6 +100,10 @@
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
+	
+	//push and open this context.
+	[self createAndPushViewControllerForManagedList:newList];
+	
 }
 
 
@@ -176,14 +182,20 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // Navigation logic may go here -- for example, create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     NSManagedObject *selectedObject = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
-     */
+    NSManagedObject *selectedObject = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+	
+	[self createAndPushViewControllerForManagedList:selectedObject];
+}
+
+// This will be called both when you select an element in the list, and when you create a new one.
+- (void)createAndPushViewControllerForManagedList:(NSManagedObject *)managedList {
+	
+	NNCheckListViewController *newViewController = [[NNCheckListViewController alloc] init];
+	[newViewController setManagedList:managedList];
+	
+	[[self navigationController] pushViewController:newViewController animated:YES];
+	[newViewController release];
+	
 }
 
 
@@ -246,13 +258,14 @@
 
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
+	NSLog(@"willchangeAA");
     [self.tableView beginUpdates];
 }
 
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
            atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
-    
+    NSLog(@"didchangesectionAA");
     switch(type) {
         case NSFetchedResultsChangeInsert:
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
@@ -268,7 +281,12 @@
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
        atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath {
-    
+    NSLog(@"didchangeobjectAA");
+	
+	for (int i = 0; i < [indexPath length]; i++){
+		NSLog(@"Index: %d",[indexPath indexAtPosition:i]);
+	}
+	
     UITableView *tableView = self.tableView;
     
     switch(type) {
@@ -294,6 +312,7 @@
 
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+	NSLog(@"didchangecontentAA");
     [self.tableView endUpdates];
 }
 

@@ -11,8 +11,13 @@
 #import <UIKit/UIKit.h>
 
 
-@interface NNCheckListViewController : UITableViewController {
-
+@interface NNCheckListViewController : UITableViewController <UITextFieldDelegate> {
+	NSManagedObject *managedList;
 }
 
+@property (nonatomic, retain) NSManagedObject *managedList;
+
+
+//private
+- (NSManagedObject *)listItemAtIndex:(NSInteger)index;
 @end

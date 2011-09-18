@@ -7,22 +7,30 @@
 //
 
 #import "NNCheckListViewController.h"
+#import "NNCheckBox.h"
 
 
 @implementation NNCheckListViewController
 
+@synthesize managedList;
 
 #pragma mark -
 #pragma mark View lifecycle
 
-/*
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+	
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    //self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	
+	UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
+    self.navigationItem.rightBarButtonItem = addButton;
+	[addButton release];
+	
+	[self setTitle:[[self managedList] valueForKey:@"title"] ];
 }
-*/
+
 
 /*
 - (void)viewWillAppear:(BOOL)animated {
@@ -52,19 +60,149 @@
 }
 */
 
+// Should also pretty this up at some point with the reusable cell stuff
+//Configure cell feels like it might not be the right place to setup the text field. 
+
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    
+	int topIndex = [indexPath indexAtPosition:[indexPath length] - 1 ];
+	id listItem = [self listItemAtIndex:topIndex];
+	
+	//NNCheckBox *checkBox = [[NNCheckBox alloc] initWithFrame:CGRectMake(5, 5, 25, 25)];
+	//[cell.contentView addSubview:checkBox];
+	
+	if ([[listItem valueForKey:@"isChecked"] isEqualToNumber:[NSNumber numberWithBool:NO]]){
+		cell.imageView.image = [UIImage imageNamed:@"checkbox_unticked.png"];
+	}else {
+		cell.imageView.image = [UIImage imageNamed:@"checkbox_ticked.png"];
+	}
+	
+	UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapCheckBox:)];
+	[cell.contentView addGestureRecognizer:singleFingerTap];
+	[singleFingerTap release];
+	
+	if ([[listItem valueForKey:@"isEditing"] isEqualToNumber:[NSNumber numberWithBool:NO]]){
+		//Normal case:
+		cell.textLabel.text = [listItem valueForKey:@"title"];
+		return;
+	}
+	NSLog(@"BIG TIME EDITING");
+    //We are editing.
+	//insert a text field. We need callbacks. 
+	CGRect fieldFrame = CGRectMake([cell frame].origin.x + 53, [cell frame].origin.y + 9.5, [cell frame].size.width - 53, [cell frame].size.height - 9.5);
+	UITextField *textField = [[UITextField alloc] initWithFrame:fieldFrame];
+	[textField setText:[listItem valueForKey:@"title"]];
+	[textField setFont:[UIFont boldSystemFontOfSize:20.0]];
+	[textField setDelegate:self];
+	
+	[cell.contentView addSubview:textField];
+	
+	//[textField becomeFirstResponder];
+
+}
+
+#pragma mark -
+#pragma mark tapstuff
+
+- (void) tapCheckBox:(UIGestureRecognizer *)gestureRecognizer
+{
+	NSLog(@"Check BOX TQPPP:");
+	UITableViewCell *cell = [[gestureRecognizer view] superview];
+	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+	int topIndex = [indexPath indexAtPosition:[indexPath length] - 1];
+	id listItem = [self listItemAtIndex:topIndex];
+	
+	if ([[listItem valueForKey:@"isChecked"] isEqual:[NSNumber numberWithBool:YES]]){
+		[listItem setValue:[NSNumber numberWithBool:NO] forKey:@"isChecked"];
+	}else{
+		[listItem setValue:[NSNumber numberWithBool:YES] forKey:@"isChecked"];
+	}
+	
+	NSError *error = nil;
+	if (![[listItem managedObjectContext] save:&error]) {
+		/*
+		 Replace this implementation with code to handle the error appropriately.
+		 
+		 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+		 */
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		abort();
+	}
+	
+	[self configureCell:cell atIndexPath:indexPath];
+}
+
+
+#pragma mark -
+#pragma mark UITextFieldDelegate
+
+//Scroll it into view when text field starts editing. 
+
+
+- (void)textFieldDidEndEditing:(UITextField *)textField{
+	
+	NSLog(@"ENDING EDIINT");
+	
+	UITableViewCell *cell = (UITableViewCell *)[[textField superview] superview];
+	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+	for (int i = 0; i < [indexPath length]; i++){
+		NSLog(@"FINISH EDIT PATH: %d",[indexPath indexAtPosition:i]);
+	}
+	
+	int topIndex = [indexPath indexAtPosition:[indexPath length] - 1];
+	id listItem = [self listItemAtIndex:topIndex];
+	
+	[listItem setValue:[NSNumber numberWithBool:NO] forKey:@"isEditing"];
+	[listItem setValue:[textField text] forKey:@"title"];
+	NSManagedObjectContext *context = [listItem managedObjectContext];
+	// Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        /*
+         Replace this implementation with code to handle the error appropriately.
+         
+         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+         */
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+
+	[textField removeFromSuperview];
+	[textField release];
+	
+	[self.tableView reloadData];
+	
+}
+
+//Are we leaking the textfield? esp when go back to root view
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+	
+	NSLog(@"SHOULD RETURN");
+	
+	[textField resignFirstResponder];
+	//[self.tableView setEditing:NO animated:YES];
+	
+	return NO;
+}
 
 #pragma mark -
 #pragma mark Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
-    return <#number of sections#>;
+    return 1;
 }
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return <#number of rows in section#>;
+	
+	if ([self managedList] == nil){
+		NSLog(@"TRYING TO GET NUMBER FROM LIST THAT DOESN'T EXIST");
+		return 0;
+	}
+	
+    return [[[self managedList] valueForKey:@"listItems"] count];
 }
 
 
@@ -79,10 +217,18 @@
     }
     
     // Configure the cell...
+	
+	[self configureCell:cell atIndexPath:indexPath];
+	
+	if (indexPath){
+		NSLog(@"WE HAVE INDEX");
+		for (int i = 0; i < [indexPath length]; i ++){
+			NSLog(@"%d",[indexPath indexAtPosition:i]);
+		}
+	}
     
     return cell;
 }
-
 
 /*
 // Override to support conditional editing of the table view.
@@ -93,19 +239,41 @@
 */
 
 
-/*
+
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     
+	NSLog(@"EDIT: %d",editingStyle);
+	
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+		NSLog(@"DELETEING OPBET FROM VIEW");
         // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
+		int topIndex = [indexPath indexAtPosition:[indexPath length] - 1];
+		NSManagedObject *listItem = [self listItemAtIndex:topIndex];
+		NSManagedObjectContext *context = [listItem managedObjectContext];
+		[context deleteObject:listItem];
+		// Save the context.
+		NSError *error = nil;
+		if (![context save:&error]) {
+			/*
+			 Replace this implementation with code to handle the error appropriately.
+			 
+			 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+			 */
+			NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+			abort();
+		}
+		
+		NSLog(@"SAVED");
+		NSLog(@"%d",[[[self managedList] valueForKey:@"listItems"] count]);
+		
+		[tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }   
 }
-*/
+
 
 
 /*
@@ -136,6 +304,72 @@
 	 [self.navigationController pushViewController:detailViewController animated:YES];
 	 [detailViewController release];
 	 */
+}
+
+
+#pragma mark -
+#pragma mark Add a new object
+
+- (void)insertNewObject {
+	NSLog(@"CREAST NEW LIST TIEME");
+	
+	// Create a new instance of the entity managed by the fetched results controller.
+    NSManagedObjectContext *context = [[self managedList] managedObjectContext];
+    NSManagedObject *newListItem = [NSEntityDescription insertNewObjectForEntityForName:@"NNCheckListItem" inManagedObjectContext:context];
+    
+    // If appropriate, configure the new managed object.
+	NSString *name = [NSString stringWithFormat:@"Item: %d",[[[self managedList] valueForKey:@"listItems"] count]];
+	
+	[newListItem setValue:name forKey:@"title"];
+	[newListItem setValue:[NSNumber numberWithBool:YES]  forKey:@"isEditing"];
+	[newListItem setValue:[NSNumber numberWithInt:[[[self managedList] valueForKey:@"listItems"] count]] forKey:@"index"];
+	//[[[self managedList] valueForKey:@"listItems"] addObject:newList];
+	[newListItem setValue:[self managedList] forKey:@"checkList"];
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        /*
+         Replace this implementation with code to handle the error appropriately.
+         
+         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+         */
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+	
+	NSLog(@"LISTSICE: %d",[[[self managedList] valueForKey:@"listItems"] count]);
+	
+	// This should be replaced by proper use of a fetched results controller
+	NSUInteger indexes[2];
+	indexes[0] = 0;  // This might still be ok, could be sections not over all controllers?
+	indexes[1] = [[[self managedList] valueForKey:@"listItems"] count] - 1;
+	NSIndexPath *newIndexPath = [NSIndexPath indexPathWithIndexes:indexes length:2];
+	[self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+	
+	// This sets the first responder correctly. 
+	UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:newIndexPath];
+	for (int i = 0; i < [[cell subviews] count]; i ++ ){
+		UIView *aView = [[cell.contentView subviews] objectAtIndex:i];
+		if ([aView isKindOfClass: [UITextField class] ]){
+			[aView becomeFirstResponder];
+		}
+	}
+	//[self.tableView reloadData];
+	
+	//[self.tableView setEditing:YES animated:YES];
+	
+}
+
+#pragma mark -
+#pragma mark Helper Methods
+
+- (NSManagedObject *)listItemAtIndex:(NSInteger)index
+{
+	NSArray *all = [[[self managedList] valueForKey:@"listItems"] allObjects];
+	NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
+	NSArray *sorted = [all sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+	return [sorted objectAtIndex:index];
 }
 
 

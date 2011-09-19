@@ -85,7 +85,7 @@
     NSManagedObject *newList = [NSEntityDescription insertNewObjectForEntityForName:@"NNCheckList" inManagedObjectContext:context];
     
     // If appropriate, configure the new managed object.
-	[newList setValue:@"Dumb" forKey:@"title"];
+	[newList setValue:@"New List" forKey:@"title"];
 	[newList setValue:[NSDate date] forKey:@"createdAt"];
 	[newList setValue:[NSDate date] forKey:@"lastAccessed"];
     
@@ -102,7 +102,34 @@
     }
 	
 	//push and open this context.
-	[self createAndPushViewControllerForManagedList:newList];
+	NNCheckListViewController *newViewController = [self createAndPushViewControllerForManagedList:newList];
+	
+	// make the title editable.
+	
+	UITextView *editTitle = [[UITextView alloc] initWithFrame: CGRectMake(0, 0, 180, 40)];
+	[editTitle setText:@"New List"];
+	[editTitle setFont:[UIFont boldSystemFontOfSize:20]];
+	[editTitle setTextColor:[UIColor whiteColor]];
+	[editTitle setBackgroundColor:[UIColor clearColor]];
+	[editTitle setTextAlignment:UITextAlignmentCenter];
+	editTitle.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	
+	NSLog(@"content height: %f",[editTitle contentSize].height);
+//	CGRect newFrame = [editTitle frame];
+//	newFrame.size.height = [editTitle contentSize].height;
+//	[editTitle setFrame: newFrame];
+	
+	//[[newViewController navigationItem] setTitleView: editTitle];
+	//[editTitle becomeFirstResponder];
+	[editTitle release];
+//	
+//	UILabel *testLabel = [[UILabel alloc]initWithFrame:CGRectMake(30, 10, 180, 40)];
+//	NSLog(@"TEST: %@", testLabel);
+//	[testLabel setText:@"HHHHHHH"];
+//	[[newViewController navigationItem] setTitleView:testLabel];
+//	//[[newViewController navigationItem] setTitle:@"IIIIII"];
+//	NSLog(@"III: %@",[[newViewController navigationItem] titleView]);
+//	[testLabel release];
 	
 }
 
@@ -188,14 +215,15 @@
 }
 
 // This will be called both when you select an element in the list, and when you create a new one.
-- (void)createAndPushViewControllerForManagedList:(NSManagedObject *)managedList {
+- (NNCheckListViewController *)createAndPushViewControllerForManagedList:(NSManagedObject *)managedList {
 	
 	NNCheckListViewController *newViewController = [[NNCheckListViewController alloc] init];
 	[newViewController setManagedList:managedList];
 	
 	[[self navigationController] pushViewController:newViewController animated:YES];
-	[newViewController release];
+	[newViewController autorelease];
 	
+	return newViewController;
 }
 
 
@@ -221,7 +249,7 @@
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastAccessed" ascending:NO];
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];

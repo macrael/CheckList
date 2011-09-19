@@ -32,21 +32,39 @@
 }
 
 
-/*
+
 - (void)viewWillAppear:(BOOL)animated {
+	// could be the place to uncheck stuff when that is the right time
+	NSLog(@"VIEW WILL BE APPEARING NOW");
+	
+	double secondsForRefresh = 60.0; //60.0 * 24.0 * 2.0;
+	
+	NSDate *lastAccessed = [[self managedList] valueForKey:@"lastAccessed"];
+	NSLog(@"%f",[lastAccessed timeIntervalSinceNow]);
+	if (fabs([lastAccessed timeIntervalSinceNow]) > secondsForRefresh){
+		NSLog(@"It's been a while. Resetting list");
+		[self clearAllCheckboxes];
+	}
+	
+	[[self managedList] setValue:[NSDate date] forKey:@"lastAccessed"];
+	
     [super viewWillAppear:animated];
 }
-*/
+
 /*
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
 */
-/*
+
 - (void)viewWillDisappear:(BOOL)animated {
+	
+	// Just in case you leave it open for a long time, this way it won't disappear unexpectedly.
+	[[self managedList] setValue:[NSDate date] forKey:@"lastAccessed"];
+	
     [super viewWillDisappear:animated];
 }
-*/
+
 /*
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
@@ -60,7 +78,6 @@
 }
 */
 
-// Should also pretty this up at some point with the reusable cell stuff
 //Configure cell feels like it might not be the right place to setup the text field. 
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -73,8 +90,10 @@
 	
 	if ([[listItem valueForKey:@"isChecked"] isEqualToNumber:[NSNumber numberWithBool:NO]]){
 		cell.imageView.image = [UIImage imageNamed:@"checkbox_unticked.png"];
+		cell.textLabel.textColor = [UIColor blackColor];
 	}else {
 		cell.imageView.image = [UIImage imageNamed:@"checkbox_ticked.png"];
+		cell.textLabel.textColor = [UIColor grayColor];
 	}
 	
 	UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapCheckBox:)];
@@ -92,6 +111,11 @@
 	}
 	NSLog(@"BIG TIME EDITING");
     //We are editing.
+	
+	// Get a hold of the textview if it exists
+	// create it if it doesn't
+	// Do I actually want to have this at the higher level? 
+		// have a different reusable cell for editing/not
 
 }
 
@@ -101,7 +125,7 @@
 - (void) tapCheckBox:(UIGestureRecognizer *)gestureRecognizer
 {
 	NSLog(@"Check BOX TQPPP:");
-	UITableViewCell *cell = [[gestureRecognizer view] superview];
+	UITableViewCell *cell = (UITableViewCell *)[[gestureRecognizer view] superview];
 	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
 	int topIndex = [indexPath indexAtPosition:[indexPath length] - 1];
 	id listItem = [self listItemAtIndex:topIndex];
@@ -117,7 +141,6 @@
 		/*
 		 Replace this implementation with code to handle the error appropriately.
 		 
-		 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
 		 */
 		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 		abort();
@@ -158,7 +181,9 @@
         /*
          Replace this implementation with code to handle the error appropriately.
          
-         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, 
+		 although it may be useful during development. If it is not possible to recover from the error, 
+		 display an alert panel that instructs the user to quit the application by pressing the Home button.
          */
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
@@ -258,7 +283,6 @@
 			/*
 			 Replace this implementation with code to handle the error appropriately.
 			 
-			 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
 			 */
 			NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 			abort();
@@ -298,7 +322,6 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // Navigation logic may go here. Create and push another view controller.
 	/*
-	 <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
      // ...
      // Pass the selected object to the new view controller.
 	 [self.navigationController pushViewController:detailViewController animated:YES];
@@ -332,7 +355,6 @@
         /*
          Replace this implementation with code to handle the error appropriately.
          
-         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
          */
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
@@ -371,6 +393,24 @@
 	NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:YES];
 	NSArray *sorted = [all sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]];
 	return [sorted objectAtIndex:index];
+}
+
+- (void)clearAllCheckboxes
+{
+	for (NSManagedObject *listItem in [[[self managedList] valueForKey:@"listItems"] allObjects]){
+		NSLog(@"Resetting %@",listItem);
+		[listItem setValue:[NSNumber numberWithBool:NO] forKey:@"isChecked"];
+	}
+	NSManagedObjectContext *context = [[self managedList] managedObjectContext];
+	NSError *error = nil;
+	if (![context save:&error]) {
+		/*
+		 Replace this implementation with code to handle the error appropriately.
+		 
+		 */
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		abort();
+	}
 }
 
 

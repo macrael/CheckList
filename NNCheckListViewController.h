@@ -20,4 +20,5 @@
 
 //private
 - (NSManagedObject *)listItemAtIndex:(NSInteger)index;
+- (void)clearAllCheckboxes;
 @end

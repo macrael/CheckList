@@ -10,6 +10,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
+#import "NNCheckListViewController.h"
 
 @interface RootViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
 
@@ -23,6 +24,6 @@
 
 
 // private I think.
-- (void)createAndPushViewControllerForManagedList:(NSManagedObject *)managedList;
+- (NNCheckListViewController *)createAndPushViewControllerForManagedList:(NSManagedObject *)managedList;
 
 @end

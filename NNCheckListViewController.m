@@ -81,23 +81,17 @@
 	[cell.contentView addGestureRecognizer:singleFingerTap];
 	[singleFingerTap release];
 	
+	//this is a hack to make the textlabel work when you are transitiong from editing. 
+	cell.textLabel.text = @" ";
 	if ([[listItem valueForKey:@"isEditing"] isEqualToNumber:[NSNumber numberWithBool:NO]]){
 		//Normal case:
-		cell.textLabel.text = [listItem valueForKey:@"title"];
+		NSLog(@"AA: %@",[listItem valueForKey:@"title"]);
+		cell.textLabel.text = [[listItem valueForKey:@"title"] description];
+		NSLog(@"BB: %@",cell.textLabel);
 		return;
 	}
 	NSLog(@"BIG TIME EDITING");
     //We are editing.
-	//insert a text field. We need callbacks. 
-	CGRect fieldFrame = CGRectMake([cell frame].origin.x + 53, [cell frame].origin.y + 9.5, [cell frame].size.width - 53, [cell frame].size.height - 9.5);
-	UITextField *textField = [[UITextField alloc] initWithFrame:fieldFrame];
-	[textField setText:[listItem valueForKey:@"title"]];
-	[textField setFont:[UIFont boldSystemFontOfSize:20.0]];
-	[textField setDelegate:self];
-	
-	[cell.contentView addSubview:textField];
-	
-	//[textField becomeFirstResponder];
 
 }
 
@@ -129,7 +123,8 @@
 		abort();
 	}
 	
-	[self configureCell:cell atIndexPath:indexPath];
+	[self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+	//[self tableView:self.tableView cellForRowAtIndexPath:indexPath];
 }
 
 
@@ -154,6 +149,8 @@
 	
 	[listItem setValue:[NSNumber numberWithBool:NO] forKey:@"isEditing"];
 	[listItem setValue:[textField text] forKey:@"title"];
+	//[listItem setValue:[NSNumber numberWithBool:YES] forKey:@"isChecked"];
+	
 	NSManagedObjectContext *context = [listItem managedObjectContext];
 	// Save the context.
     NSError *error = nil;
@@ -168,9 +165,12 @@
     }
 
 	[textField removeFromSuperview];
-	[textField release];
+	//[textField release];
+	NSLog(@"LAB: %@",[cell textLabel]);
 	
-	[self.tableView reloadData];
+	//[self.tableView reloadData];
+	[self configureCell:cell atIndexPath:indexPath];
+	//[self tableView:self.tableView cellForRowAtIndexPath:indexPath];
 	
 }
 
@@ -349,15 +349,16 @@
 	
 	// This sets the first responder correctly. 
 	UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:newIndexPath];
-	for (int i = 0; i < [[cell subviews] count]; i ++ ){
-		UIView *aView = [[cell.contentView subviews] objectAtIndex:i];
-		if ([aView isKindOfClass: [UITextField class] ]){
-			[aView becomeFirstResponder];
-		}
-	}
-	//[self.tableView reloadData];
 	
-	//[self.tableView setEditing:YES animated:YES];
+	CGRect fieldFrame = CGRectMake(53, 10, [cell frame].size.width - 53, [cell frame].size.height - 10);
+	UITextField *textField = [[UITextField alloc] initWithFrame:fieldFrame];
+	[textField setText:[newListItem valueForKey:@"title"]];
+	[textField setFont:[UIFont boldSystemFontOfSize:20.0]];
+	[textField setDelegate:self];
+	
+	[cell.contentView addSubview:textField];
+	
+	[textField becomeFirstResponder];
 	
 }
 

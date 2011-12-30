@@ -15,7 +15,7 @@
 	NSManagedObject *managedList;
 }
 
-@property (nonatomic, retain) NSManagedObject *managedList;
+@property (nonatomic) NSManagedObject *managedList;
 
 
 //private

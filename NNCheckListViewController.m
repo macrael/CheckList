@@ -7,7 +7,6 @@
 //
 
 #import "NNCheckListViewController.h"
-#import "NNCheckBox.h"
 
 
 @implementation NNCheckListViewController
@@ -26,7 +25,6 @@
 	
 	UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
     self.navigationItem.rightBarButtonItem = addButton;
-	[addButton release];
 	
 	[self setTitle:[[self managedList] valueForKey:@"title"] ];
 }
@@ -98,7 +96,6 @@
 	
 	UITapGestureRecognizer *singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapCheckBox:)];
 	[cell.contentView addGestureRecognizer:singleFingerTap];
-	[singleFingerTap release];
 	
 	//this is a hack to make the textlabel work when you are transitiong from editing. 
 	cell.textLabel.text = @" ";
@@ -238,7 +235,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
     // Configure the cell...
@@ -430,9 +427,6 @@
 }
 
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 
 @end

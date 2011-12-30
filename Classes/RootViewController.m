@@ -32,7 +32,6 @@
     
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
     self.navigationItem.rightBarButtonItem = addButton;
-    [addButton release];
 }
 
 
@@ -121,7 +120,6 @@
 	
 	//[[newViewController navigationItem] setTitleView: editTitle];
 	//[editTitle becomeFirstResponder];
-	[editTitle release];
 //	
 //	UILabel *testLabel = [[UILabel alloc]initWithFrame:CGRectMake(30, 10, 180, 40)];
 //	NSLog(@"TEST: %@", testLabel);
@@ -155,7 +153,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
     // Configure the cell.
@@ -221,7 +219,6 @@
 	[newViewController setManagedList:managedList];
 	
 	[[self navigationController] pushViewController:newViewController animated:YES];
-	[newViewController autorelease];
 	
 	return newViewController;
 }
@@ -260,10 +257,6 @@
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     
-    [aFetchedResultsController release];
-    [fetchRequest release];
-    [sortDescriptor release];
-    [sortDescriptors release];
     
     NSError *error = nil;
     if (![fetchedResultsController_ performFetch:&error]) {
@@ -372,11 +365,6 @@
 }
 
 
-- (void)dealloc {
-    [fetchedResultsController_ release];
-    [managedObjectContext_ release];
-    [super dealloc];
-}
 
 
 @end

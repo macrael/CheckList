@@ -19,8 +19,8 @@
     NSManagedObjectContext *managedObjectContext_;
 }
 
-@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic) NSFetchedResultsController *fetchedResultsController;
 
 
 // private I think.

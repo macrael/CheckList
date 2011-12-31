@@ -104,37 +104,9 @@
 	//push and open this context.
 	NNCheckListViewController *newViewController = [self createAndPushViewControllerForManagedList:newList];
 	
-	// make the title editable.
-    // Need to do this before we push the view.
-	
-    // For some reason, the 30px is the magic number for height.
-	UITextField *editTitle = [[UITextField alloc] initWithFrame: CGRectMake(0, 0, 180, 30)];
-	[editTitle setText:@"New Listy"];
-	[editTitle setFont:[UIFont boldSystemFontOfSize:20]];
-	[editTitle setTextColor:[UIColor whiteColor]];
-    [editTitle setDelegate:newViewController];
-    [editTitle setTag:kNNTitleTag];
-    
-	//[editTitle setBackgroundColor:[UIColor clearColor]];
-	[editTitle setTextAlignment:UITextAlignmentCenter];
-	//editTitle.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    //[editTitle setBorderStyle:UITextBorderStyleLine];
-	
-	//NSLog(@"content height: %f",[editTitle contentSize].height);
-//	CGRect newFrame = [editTitle frame];
-//	newFrame.size.height = [editTitle contentSize].height;
-//	[editTitle setFrame: newFrame];
-	
-	[[newViewController navigationItem] setTitleView: editTitle];
-	[editTitle becomeFirstResponder];
-//	
-//	UILabel *testLabel = [[UILabel alloc]initWithFrame:CGRectMake(30, 10, 180, 40)];
-//	NSLog(@"TEST: %@", testLabel);
-//	[testLabel setText:@"HHHHHHH"];
-//	[[newViewController navigationItem] setTitleView:testLabel];
-//	//[[newViewController navigationItem] setTitle:@"IIIIII"];
-//	NSLog(@"III: %@",[[newViewController navigationItem] titleView]);
-
+    // Since we are creating this for the first time, make the title editable
+    // TODO: make it hilight all the text, too
+	[[[newViewController navigationItem] titleView] becomeFirstResponder];
 	
 }
 

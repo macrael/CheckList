@@ -27,7 +27,25 @@
 	UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
     self.navigationItem.rightBarButtonItem = addButton;
 	
-	[self setTitle:[[self managedList] valueForKey:@"title"] ];
+    
+    // make the title editable.
+	
+    // For some reason, the 28px is the magic number for height.
+	UITextField *editTitle = [[UITextField alloc] initWithFrame: CGRectMake(0, 0, 180, 29)];
+	[editTitle setText:[[self managedList] valueForKey:@"title"]];
+	[editTitle setFont:[UIFont boldSystemFontOfSize:20]];
+	[editTitle setTextColor:[UIColor whiteColor]];
+    [editTitle setDelegate:self];
+    [editTitle setTag:kNNTitleTag];
+    
+	[editTitle setTextAlignment:UITextAlignmentCenter];
+    
+    //TODO: Deal with the title being too long.
+    
+    //[editTitle setBorderStyle:UITextBorderStyleLine];
+	
+	[[self navigationItem] setTitleView: editTitle];
+
 }
 
 
@@ -207,7 +225,22 @@
         
         NSLog(@"HEYHEYHEY Done editing the title");
         
+        [managedList setValue:[textField text] forKey:@"title"];
         
+        NSManagedObjectContext *context = [managedList managedObjectContext];
+        // Save the context.
+        NSError *error = nil;
+        if (![context save:&error]) {
+            /*
+             Replace this implementation with code to handle the error appropriately.
+             
+             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, 
+             although it may be useful during development. If it is not possible to recover from the error, 
+             display an alert panel that instructs the user to quit the application by pressing the Home button.
+             */
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
         
     }
 	

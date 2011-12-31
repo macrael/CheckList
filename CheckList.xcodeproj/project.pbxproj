@@ -21,6 +21,7 @@
 		4678D5AE13C9303A0088A7E6 /* NNCheckListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4678D5AC13C9303A0088A7E6 /* NNCheckListViewController.xib */; };
 		46F375BE142682F0006BE7E4 /* checkbox_ticked.png in Resources */ = {isa = PBXBuildFile; fileRef = 46F375BC142682F0006BE7E4 /* checkbox_ticked.png */; };
 		46F375BF142682F0006BE7E4 /* checkbox_unticked.png in Resources */ = {isa = PBXBuildFile; fileRef = 46F375BD142682F0006BE7E4 /* checkbox_unticked.png */; };
+		7271B23814AFA4E700A08177 /* NNCheckList.m in Sources */ = {isa = PBXBuildFile; fileRef = 7271B23714AFA4E700A08177 /* NNCheckList.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,8 @@
 		4678D5AC13C9303A0088A7E6 /* NNCheckListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NNCheckListViewController.xib; sourceTree = "<group>"; };
 		46F375BC142682F0006BE7E4 /* checkbox_ticked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkbox_ticked.png; sourceTree = SOURCE_ROOT; };
 		46F375BD142682F0006BE7E4 /* checkbox_unticked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkbox_unticked.png; sourceTree = SOURCE_ROOT; };
+		7271B23614AFA4E700A08177 /* NNCheckList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NNCheckList.h; sourceTree = "<group>"; };
+		7271B23714AFA4E700A08177 /* NNCheckList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NNCheckList.m; sourceTree = "<group>"; };
 		72B6B08114AE9D5600D735B2 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* CheckList-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "CheckList-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -67,6 +70,8 @@
 			children = (
 				28C286DF0D94DF7D0034E888 /* RootViewController.h */,
 				28C286E00D94DF7D0034E888 /* RootViewController.m */,
+				7271B23614AFA4E700A08177 /* NNCheckList.h */,
+				7271B23714AFA4E700A08177 /* NNCheckList.m */,
 				1D3623240D0F684500981E51 /* CheckListAppDelegate.h */,
 				1D3623250D0F684500981E51 /* CheckListAppDelegate.m */,
 				4678D5AA13C9303A0088A7E6 /* NNCheckListViewController.h */,
@@ -203,6 +208,7 @@
 				28C286E10D94DF7D0034E888 /* RootViewController.m in Sources */,
 				28D3F202112F7DC200FD0661 /* CheckList.xcdatamodeld in Sources */,
 				4678D5AD13C9303A0088A7E6 /* NNCheckListViewController.m in Sources */,
+				7271B23814AFA4E700A08177 /* NNCheckList.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

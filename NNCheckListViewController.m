@@ -426,8 +426,10 @@
 	[textField setDelegate:self];
     [textField setTag:kNNItemTag];
 	
+    [self.tableView scrollToRowAtIndexPath:newIndexPath atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
+    
 	[cell.contentView addSubview:textField];
-	
+    
 	[textField becomeFirstResponder];
 	
 }

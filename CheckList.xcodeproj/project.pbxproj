@@ -43,6 +43,7 @@
 		4678D5AC13C9303A0088A7E6 /* NNCheckListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NNCheckListViewController.xib; sourceTree = "<group>"; };
 		46F375BC142682F0006BE7E4 /* checkbox_ticked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkbox_ticked.png; sourceTree = SOURCE_ROOT; };
 		46F375BD142682F0006BE7E4 /* checkbox_unticked.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkbox_unticked.png; sourceTree = SOURCE_ROOT; };
+		72B6B08114AE9D5600D735B2 /* constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = constants.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* CheckList-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "CheckList-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -98,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				28A0AAE50D9B0CCF005BE974 /* CheckList_Prefix.pch */,
+				72B6B08114AE9D5600D735B2 /* constants.h */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";

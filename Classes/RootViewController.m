@@ -8,6 +8,7 @@
 
 #import "RootViewController.h"
 #import "NNCheckListViewController.h"
+#import "constants.h"
 
 
 @interface RootViewController ()
@@ -84,7 +85,7 @@
     NSManagedObject *newList = [NSEntityDescription insertNewObjectForEntityForName:@"NNCheckList" inManagedObjectContext:context];
     
     // If appropriate, configure the new managed object.
-	[newList setValue:@"New List" forKey:@"title"];
+	[newList setValue:@"New Last" forKey:@"title"];
 	[newList setValue:[NSDate date] forKey:@"createdAt"];
 	[newList setValue:[NSDate date] forKey:@"lastAccessed"];
     
@@ -104,22 +105,28 @@
 	NNCheckListViewController *newViewController = [self createAndPushViewControllerForManagedList:newList];
 	
 	// make the title editable.
+    // Need to do this before we push the view.
 	
-	UITextView *editTitle = [[UITextView alloc] initWithFrame: CGRectMake(0, 0, 180, 40)];
-	[editTitle setText:@"New List"];
+    // For some reason, the 30px is the magic number for height.
+	UITextField *editTitle = [[UITextField alloc] initWithFrame: CGRectMake(0, 0, 180, 30)];
+	[editTitle setText:@"New Listy"];
 	[editTitle setFont:[UIFont boldSystemFontOfSize:20]];
 	[editTitle setTextColor:[UIColor whiteColor]];
-	[editTitle setBackgroundColor:[UIColor clearColor]];
+    [editTitle setDelegate:newViewController];
+    [editTitle setTag:kNNTitleTag];
+    
+	//[editTitle setBackgroundColor:[UIColor clearColor]];
 	[editTitle setTextAlignment:UITextAlignmentCenter];
-	editTitle.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	//editTitle.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    //[editTitle setBorderStyle:UITextBorderStyleLine];
 	
-	NSLog(@"content height: %f",[editTitle contentSize].height);
+	//NSLog(@"content height: %f",[editTitle contentSize].height);
 //	CGRect newFrame = [editTitle frame];
 //	newFrame.size.height = [editTitle contentSize].height;
 //	[editTitle setFrame: newFrame];
 	
-	//[[newViewController navigationItem] setTitleView: editTitle];
-	//[editTitle becomeFirstResponder];
+	[[newViewController navigationItem] setTitleView: editTitle];
+	[editTitle becomeFirstResponder];
 //	
 //	UILabel *testLabel = [[UILabel alloc]initWithFrame:CGRectMake(30, 10, 180, 40)];
 //	NSLog(@"TEST: %@", testLabel);
@@ -127,7 +134,7 @@
 //	[[newViewController navigationItem] setTitleView:testLabel];
 //	//[[newViewController navigationItem] setTitle:@"IIIIII"];
 //	NSLog(@"III: %@",[[newViewController navigationItem] titleView]);
-//	[testLabel release];
+
 	
 }
 

@@ -7,6 +7,7 @@
 //
 
 #import "NNCheckListViewController.h"
+#import "constants.h"
 
 
 @implementation NNCheckListViewController
@@ -145,6 +146,9 @@
 	
 	[self configureCell:[self.tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
 	//[self tableView:self.tableView cellForRowAtIndexPath:indexPath];
+    
+    // Must deal with if the checkbox is editing and you click on the box. 
+    // should correctly set the color of the editing text. 
 }
 
 
@@ -157,42 +161,55 @@
 - (void)textFieldDidEndEditing:(UITextField *)textField{
 	
 	NSLog(@"ENDING EDIINT");
+    
+    // Got to check if this is the title or if it is a normal table view
+    if ([textField tag] == kNNItemTag){
+        
+        NSLog(@"HEYHEYHEYEditing saving an item info");
 	
-	UITableViewCell *cell = (UITableViewCell *)[[textField superview] superview];
-	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-	for (int i = 0; i < [indexPath length]; i++){
-		NSLog(@"FINISH EDIT PATH: %d",[indexPath indexAtPosition:i]);
-	}
-	
-	int topIndex = [indexPath indexAtPosition:[indexPath length] - 1];
-	id listItem = [self listItemAtIndex:topIndex];
-	
-	[listItem setValue:[NSNumber numberWithBool:NO] forKey:@"isEditing"];
-	[listItem setValue:[textField text] forKey:@"title"];
-	//[listItem setValue:[NSNumber numberWithBool:YES] forKey:@"isChecked"];
-	
-	NSManagedObjectContext *context = [listItem managedObjectContext];
-	// Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-        /*
-         Replace this implementation with code to handle the error appropriately.
-         
-         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, 
-		 although it may be useful during development. If it is not possible to recover from the error, 
-		 display an alert panel that instructs the user to quit the application by pressing the Home button.
-         */
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
+        UITableViewCell *cell = (UITableViewCell *)[[textField superview] superview];
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+        for (int i = 0; i < [indexPath length]; i++){
+            NSLog(@"FINISH EDIT PATH: %d",[indexPath indexAtPosition:i]);
+        }
+        
+        int topIndex = [indexPath indexAtPosition:[indexPath length] - 1];
+        id listItem = [self listItemAtIndex:topIndex];
+        
+        [listItem setValue:[NSNumber numberWithBool:NO] forKey:@"isEditing"];
+        [listItem setValue:[textField text] forKey:@"title"];
+        //[listItem setValue:[NSNumber numberWithBool:YES] forKey:@"isChecked"];
+        
+        NSManagedObjectContext *context = [listItem managedObjectContext];
+        // Save the context.
+        NSError *error = nil;
+        if (![context save:&error]) {
+            /*
+             Replace this implementation with code to handle the error appropriately.
+             
+             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, 
+             although it may be useful during development. If it is not possible to recover from the error, 
+             display an alert panel that instructs the user to quit the application by pressing the Home button.
+             */
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
 
-	[textField removeFromSuperview];
-	//[textField release];
-	NSLog(@"LAB: %@",[cell textLabel]);
-	
-	//[self.tableView reloadData];
-	[self configureCell:cell atIndexPath:indexPath];
-	//[self tableView:self.tableView cellForRowAtIndexPath:indexPath];
+        [textField removeFromSuperview];
+        //[textField release];
+        NSLog(@"LAB: %@",[cell textLabel]);
+        
+        //[self.tableView reloadData];
+        [self configureCell:cell atIndexPath:indexPath];
+        //[self tableView:self.tableView cellForRowAtIndexPath:indexPath];
+        
+    }else if ([textField tag] == kNNTitleTag){
+        
+        NSLog(@"HEYHEYHEY Done editing the title");
+        
+        
+        
+    }
 	
 }
 
@@ -374,6 +391,7 @@
 	[textField setText:[newListItem valueForKey:@"title"]];
 	[textField setFont:[UIFont boldSystemFontOfSize:20.0]];
 	[textField setDelegate:self];
+    [textField setTag:kNNItemTag];
 	
 	[cell.contentView addSubview:textField];
 	

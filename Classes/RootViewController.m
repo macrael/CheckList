@@ -106,7 +106,12 @@
 	
     // Since we are creating this for the first time, make the title editable
     // TODO: make it hilight all the text, too
-	[[[newViewController navigationItem] titleView] becomeFirstResponder];
+    UITextField *titleField = (UITextField *)[[newViewController navigationItem] titleView];
+	[titleField becomeFirstResponder];
+
+    [titleField setSelectedTextRange: 
+                        [titleField textRangeFromPosition:[titleField beginningOfDocument] 
+                                               toPosition:[titleField endOfDocument]]];
 	
 }
 

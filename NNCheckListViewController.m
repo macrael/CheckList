@@ -381,14 +381,14 @@
 #pragma mark Add a new object
 
 - (void)insertNewObject {
-	NSLog(@"CREAST NEW LIST TIEME");
+	NSLog(@"CREAST NEW LIST ITEME");
 	
 	// Create a new instance of the entity managed by the fetched results controller.
     NSManagedObjectContext *context = [[self managedList] managedObjectContext];
     NSManagedObject *newListItem = [NSEntityDescription insertNewObjectForEntityForName:@"NNCheckListItem" inManagedObjectContext:context];
     
     // If appropriate, configure the new managed object.
-	NSString *name = [NSString stringWithFormat:@"Item: %d",[[[self managedList] valueForKey:@"listItems"] count]];
+	NSString *name = @"";
 	
 	[newListItem setValue:name forKey:@"title"];
 	[newListItem setValue:[NSNumber numberWithBool:YES]  forKey:@"isEditing"];

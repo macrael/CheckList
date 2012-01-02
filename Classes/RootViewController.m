@@ -39,7 +39,17 @@
 
 // Implement viewWillAppear: to do additional setup before the view is presented.
 - (void)viewWillAppear:(BOOL)animated {
-    [[self tableView] reloadData];
+    //[[self tableView] reloadData];
+    NSLog(@"HIHIHHIHIHI: %@", [[self fetchedResultsController] sections]);
+    NSError *error = nil;
+    //BOOL success = [[self fetchedResultsController] performFetch:&error];
+    
+    //if (!success){
+        
+   //     NSLog(@"Uncaught error!! %@", error);
+     //   abort();
+    //}
+    
     [super viewWillAppear:animated];
 }
 
@@ -136,10 +146,13 @@
 // the titles of sections
 // should try just to have one only if you have two, and it be "OLD"
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    NSLog(@"WHAT TITITITLE");
     if (section == 0){
+        NSLog(@"No TITLE");
         return nil;
     }
     else {
+        NSLog(@"Old Title");
         return @"Old";
     }
 }

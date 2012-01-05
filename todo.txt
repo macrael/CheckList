@@ -1,0 +1,104 @@
+Lots working!
+
+* when you add a new item while already editing, scroll into the right place if
+  needed.
+
+* get on a phone
+* have the default list item name be nothing
+
+* figure out the right way to name lists when creating them
+    * could edit in title bar?
+        * really looks good, but need good ui
+            * I think we want a popover that says "Set Title" or something
+        * con: weird act from front page
+            * would just slide over
+    x could edit inline as we do lists.
+        * Can't edit while editing the rest of the list.
+        * This is consistent, edit both list items the same way.
+    * double tap to edit?
+        * Definitely need to be able to edit the title. 
+
+* better checkbox
+* do I need a checkbox animation?
+    * Things does, hace a nice one. 
+
+* Stop zeroing out data on launch.
+
+* icon
+
+* only check checkbox when you click on it? Not whole item?
+    * (maybe keep it this way? Is kind of good.)
+    * if we revert this, we will have to deal with selection
+
+* shake to clear everything, with confirmation.
+
+BUGS:
+* create items, delete a couple, create a new one: item has title, checked state
+* if editing mode is scrolled off the end, we end up with nothing. 
+    * This was kind of expected. 
+    * Need to create on call again.
+* doing the above and then hit return, replaced the first one. WEIRD
+* at some point I got stuck with an empty cell at the bottom, this prevented
+  further editing
+* Actual problem is that if you create an item off screen, you get blank
+* Text jumps on either 4 or < 
+    * 9.6 vs 10. 
+* We aren't reloading the data, so the list view is always wrong.
+* The title of lists does not have the correct outline that list titles are
+  supposed to have
+
+
+EDITING
+* Modeless would be great
+* This might be some real reworking
+* re-ordering
+    * could be enabled all the time
+* edit all the things
+    * If this is really challenging, can just skip. You can always just
+      recreate.
+* how do I enable besides when clicking plus?
+* double (tripple?) or long tap to enter editing mode? 
+    * at least to edit inline. 
+    * This actually kind of works: you want to change something (position,
+      title) so you double click on it to do so
+* How do I get out of editing mode? 
+    * replace + button?
+    * replace back button?
+* batch deletion
+    * Who cares. 
+* could edit the title by double tapping
+    * If we do that, we need to do it everywhere. 
+        * if we can edit list items, the done button should dismiss the
+          keyboard
+
+* Should the list have proper textfields in all of them instead of labels that
+  we replace. 
+
+
+Front Ordering
+* order by last access date
+* if that access date is in the past, switch all checks to no
+* NO. "recently accessed" section, and old section, alphabetical.
+* Do I need a separator? Or just have an icon that shows how many are complete,
+  all newly edited ones will end up at the top naturally. 
+
+* maybe uncheck everything once you check everything?
+    * I think this is a bad plan. Let it time out and let it be clearable.
+
+* Display percentage checked on frontpage
+
+x gray out the selected item
+    * Should work when editing
+
+* should you be able to toggle the checkbox on an editing item?
+    * why not?
+
+
+----
+
+* search for list by name
+
+* sounds?
+* many different loooking check boxes? (hand drawn)
+
+* The plus button doesn't need to fade betweeen list views. 
